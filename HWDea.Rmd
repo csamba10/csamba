@@ -1,0 +1,148 @@
+---
+title: "DEA Homework"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r}
+x1 <- c(150,400,320,520,350,320)
+x2 <- c(0.2,0.7,1.2,2,1.2,0.7)
+x_prime <- matrix(c(x1,x2),ncol = 2)
+y1 <- c(14000,14000,42000,28000,19000,14000)
+y2 <- c(3500,21000,10500,42000,25000,15000)
+y_prime <- matrix(c(y1, y2), ncol=2)
+x_prime
+y_prime
+colnames(x_prime) <- c("Staffing Labor","Supply Cost")
+x_prime
+colnames(y_prime) <- c("Reimbursed days public","Reimbursed days private")
+y_prime
+
+e <- dea(x_prime,y_prime,RTS = "FDH")
+e
+peers(e)
+lambda(e)
+dea.plot(x_prime,y_prime,RTS = "FDH")
+```
+
+```{r}
+x1 <- c(150,400,320,520,350,320)
+x2 <- c(0.2,0.7,1.2,2,1.2,0.7)
+x_prime <- matrix(c(x1,x2),ncol = 2)
+y1 <- c(14000,14000,42000,28000,19000,14000)
+y2 <- c(3500,21000,10500,42000,25000,15000)
+y_prime <- matrix(c(y1, y2), ncol=2)
+x_prime
+y_prime
+colnames(x_prime) <- c("Staffing Labor","Supply Cost")
+x_prime
+colnames(y_prime) <- c("Reimbursed days public","Reimbursed days private")
+y_prime
+
+e <- dea(x_prime,y_prime,RTS ="crs")
+e
+peers(e)
+lambda(e)
+dea.plot(x_prime,y_prime,RTS = "crs")
+```
+
+
+
+
+
+```{r}
+x1 <- c(150,400,320,520,350,320)
+x2 <- c(0.2,0.7,1.2,2,1.2,0.7)
+x_prime <- matrix(c(x1,x2),ncol = 2)
+y1 <- c(14000,14000,42000,28000,19000,14000)
+y2 <- c(3500,21000,10500,42000,25000,15000)
+y_prime <- matrix(c(y1, y2), ncol=2)
+x_prime
+y_prime
+colnames(x_prime) <- c("Staffing Labor","Supply Cost")
+x_prime
+colnames(y_prime) <- c("Reimbursed days public","Reimbursed days private")
+y_prime
+
+e <- dea(x,y,RTS ="VRS")
+e
+peers(e)
+lambda(e)
+dea.plot(x_prime,y_prime,RTS = "VRS")
+```
+
+```{r}
+x1 <- c(150,400,320,520,350,320)
+x2 <- c(0.2,0.7,1.2,2,1.2,0.7)
+x_prime <- matrix(c(x1,x2),ncol = 2)
+y1 <- c(14000,14000,42000,28000,19000,14000)
+y2 <- c(3500,21000,10500,42000,25000,15000)
+y_prime <- matrix(c(y1, y2), ncol=2)
+x_prime
+y_prime
+colnames(x_prime) <- c("Staffing Labor","Supply Cost")
+x_prime
+colnames(y_prime) <- c("Reimbursed days public","Reimbursed days private")
+y_prime
+
+e <- dea(x,y,RTS = "DRS")
+e
+peers(e)
+lambda(e)
+dea.plot(x_prime,y_prime,RTS = "DRS")
+```
+
+```{r}
+x1 <- c(150,400,320,520,350,320)
+x2 <- c(0.2,0.7,1.2,2,1.2,0.7)
+x_prime <- matrix(c(x1,x2),ncol = 2)
+y1 <- c(14000,14000,42000,28000,19000,14000)
+y2 <- c(3500,21000,10500,42000,25000,15000)
+y_prime <- matrix(c(y1, y2), ncol=2)
+x_prime
+y_prime
+colnames(x_prime) <- c("Staffing Labor","Supply Cost")
+x_prime
+colnames(y_prime) <- c("Reimbursed days public","Reimbursed days private")
+y_prime
+
+e <- dea(x,y,RTS = "IRS")
+e
+peers(e)
+lambda(e)
+dea.plot(x_prime,y_prime,RTS = "IRS")
+```
+
+
+
+
+
+```{r}
+x1 <- c(150,400,320,520,350,320)
+x2 <- c(0.2,0.7,1.2,2,1.2,0.7)
+x_prime <- matrix(c(x1,x2),ncol = 2)
+y1 <- c(14000,14000,42000,28000,19000,14000)
+y2 <- c(3500,21000,10500,42000,25000,15000)
+y_prime <- matrix(c(y1, y2), ncol=2)
+x_prime
+y_prime
+colnames(x_prime) <- c("Staffing Labor","Supply Cost")
+x_prime
+colnames(y_prime) <- c("Reimbursed days public","Reimbursed days private")
+y_prime
+
+e <- dea(x,y,RTS = "FDH+")
+e
+peers(e)
+lambda(e)
+dea.plot(x_prime,y_prime,RTS = "FDH+")
+```
+
+
+
+
+
+
+
