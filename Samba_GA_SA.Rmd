@@ -1,0 +1,174 @@
+---
+title: "Samba_GA_SA"
+author: "Choe Samba"
+date: "November 4, 2018"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+library('ggplot2')
+library('quantmod')
+library('GA')
+library('GenSA')
+```
+
+
+```{r}
+library("quantmod")
+tickers <- c("GOOG", "TRQ", "AMZN", "PGR", "TWTR")
+getSymbols(tickers, from = "2017-01-01", to = "2018-10-30")
+P <- NULL
+for(ticker in tickers) {
+ tmp <- Cl(to.monthly(eval(parse(text = ticker))))
+ P <- cbind(P, tmp)
+}
+colnames(P) <- tickers
+R <- diff(log(P))
+R <- R[-1,]
+mu <- colMeans(R)
+sigma <- cov(R)
+library("PerformanceAnalytics")
+pContribCVaR <- ES(weights = rep(0.2, 5), method = "gaussian", portfolio_method = "component", mu = mu, sigma = sigma)$pct_contrib_ES
+obj <- function(w) {
+ fn.call <<- fn.call + 1
+ if (sum(w) == 0) { w <- w + 1e-2 }
+ w <- w / sum(w)
+ CVaR <- ES(weights = w, method = "gaussian", portfolio_method = "component", mu = mu, sigma = sigma)
+ tmp1 <- CVaR$ES
+ tmp2 <- max(CVaR$pct_contrib_ES - 0.225, 0)
+ out <- tmp1 + 1e3 * tmp2
+ return(out)
+}
+```
+
+```{r}
+
+objective <- function(w) {
+ fn.call <<- fn.call + 1
+ if (sum(w) == 0) { w <- w + 1e-2 }
+ w <- w / sum(w)
+ CVaR <- ES(weights = w, method = "gaussian", portfolio_method = "component", mu = mu, sigma = sigma)
+ tmp1 <- CVaR$ES
+ tmp2 <- min(CVaR$pct_contrib_ES - 0.225, 0)
+ out <- tmp1 + 1e3 * tmp2
+ return(out)
+ 
+}
+
+
+```
+
+## GA
+```{r}
+set.seed(1234)
+fn.call <<- 0
+gap <- ga(type = "real-valued",fitness=obj,lower=rep(0,5),upper=rep(1,5), popSize = 50,maxiter = 150, pcrossover = 0.75, pmutation = 0.1)
+
+summary(gap)
+
+
+```
+
+
+
+## GENSA
+```{r}
+set.seed(9999)
+fn.call <<- 0
+
+
+out.GenSA <- GenSA(fn = obj, lower = rep(0, 5), upper = rep(1, 5), control = list(smooth = FALSE, max.call = 3000))
+fn.call.GenSA <- fn.call
+out.GenSA$value
+out.GenSA$counts
+cat("GenSA call functions", fn.call.GenSA, "times.\n")
+wstar.GenSA <- out.GenSA$par
+wstar.GenSA <- wstar.GenSA / sum(wstar.GenSA)
+rbind(tickers, round(100 * wstar.GenSA, 2))
+100 * (sum(wstar.GenSA * mu) - mean(mu))
+wstar.GenSA
+```
+
+```{r}
+gen_solution<-c(0.20427575, 0.05866408, 0.09714570, 0.51204626, 0.12786821)
+gap_solution<-c(0.1739779, 0.03611608, 0.014552, 0.7534922, 0.8972672)
+result <-cbind(gap_solution,gen_solution)
+row.names(result)<-c("GOOG","TRQ","AMZN","PGR","TWTR")
+result
+```
+
+```{r}
+
+
+
+```
+
+
+Q.2 In this problem, you will apply both GA and SA to search for the optimal parameters in a regression. Do the following:
+Create a dataset with with 20 X, Y values. You may use the same dataset that you used in Dr. Razavi's class.
+Use GA and SA to search for optimal b0 and b1 estimates. The objective should be to minimize  SSE (sums of square error). How does this compare to the exhaustive search you did in your class?
+Plot your solution, and the optimal regression line (using the built-in function). Clearly label the output.
+  
+# Finding b0 and b1 value manually
+```{r}
+x=c(58,60,61,67,69,72,76,79,82,89,95,97)
+y=c(2.98,3.08,3.42,3.89,4.01,4.22,4.56,4.8,5.02,5.45,6.54,7.56)
+## ss= sum square 
+ssxy=sum((x-mean(x))*(y-mean(y)))
+ssx=sum((x-mean(x))^2)
+
+```
+
+```{r}
+b1= ssxy/ssx
+b1
+
+```
+
+```{r}
+b0=mean(y)-b1*mean(x)
+b0
+
+```
+
+```
+  }
+```
+
+
+```{r}
+object_ga_sa <- function(x=c(58,60,61,67,69,72,76,79,82,89,95,97),y=c(2.98,3.08,3.42,3.89,4.01,4.22,4.56,4.8,5.02,5.45,6.54,7.56)){sum((y-(b0-b1*x))^2)}
+```
+
+```{r}
+ga_REG <- ga(type = "real-valued", fitness=obj, lower = rep(0, 5), upper = rep(1, 5),popSize = 50,maxiter = 150)
+summary(ga_REG)
+
+```
+
+```{r}
+lm(b0~b1)
+
+```
+```{r}
+plot(ga_REG)
+```
+
+```{r}
+gen_REG <- GenSA(fn = object_ga_sa, lower = rep(0,2), upper = rep(0.03, 2), control = list(smooth = FALSE, max.call = 3000))
+gen_REG
+```
+
+```{r}
+n =object_ga_sa
+ll = c(0)
+ul = c(2)
+par = 2
+out1 <- GenSA(par=par,lower=ll,upper=ul,fn=n)
+out1[c("value","par","counts")]
+curve(nfun, from = 0, to = 2, n = 10)
+points(out1$par[1],-out1$value, col = 2, pch = 1)
+```
+
